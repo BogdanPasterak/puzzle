@@ -25,9 +25,10 @@ const colorsRGBA = [
 // texty na polach
 const opis = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun","" , "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","" ,
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
     "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
-    "Sun", "Mon", "Tue", "Wed","2025" ,"2026" ,"2027" ,"2028" , "Thu", "Fri", "Sat"
+    "2025" ,"2026" ,"2027" ,"2028"
 ];
 // bierzacy dzien
 const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"]
@@ -58,12 +59,12 @@ function generatePlansza() {
             // miesiac, dzien, rok, dzien tygodnia
             if ( i === 6 || i === 13) cell.classList.add("empty");
             else if (i < 13) cell.classList.add("month");
-            else if (i < 45) cell.classList.add("day");
-            else if (i > 48 && i < 53) cell.classList.add("year");
-            else cell.classList.add("wday");
+            else if (i < 21) cell.classList.add("wday");
+            else if (i < 52) cell.classList.add("day");
+            else cell.classList.add("year");
             // pierwszy styczen 2025 - Sroda
-            if (i === 0 || i === 14 || i === 49 ) cell.classList.add("today");
-            if (i === 48) cell.classList.add("week");
+            if (i === 0 || i === 21 || i === 52 ) cell.classList.add("today");
+            if (i === 17) cell.classList.add("week");
             i++;
             boardContainer.appendChild(cell);
         }
@@ -87,7 +88,7 @@ function today() {
 
     return {
         "month" : (parseInt(thisDate[0].id) - ((parseInt(thisDate[0].id) > 5) ? 1: 0)),
-        "day" : (parseInt(thisDate[1].id) - 13),
+        "day" : (parseInt(thisDate[1].id) - 20),
         "year" : (parseInt(thisDate[2].textContent))
     }
 }
@@ -151,7 +152,7 @@ function dodajEventyDoPul() {
         });
         day.forEach(div => {
             div.addEventListener('click', (event) => {
-                setDay(parseInt(event.target.id) - 13);
+                setDay(parseInt(event.target.id) - 20);
                 sprawdzDate();
             });
         });
@@ -164,7 +165,7 @@ function dodajEventyDoPul() {
         });
     });
     document.querySelector("button").addEventListener('click', (e) => {
-        console.log("poszlo");
+        // console.log("poszlo");
         setShapeOnBoard();
     })
 }
@@ -367,7 +368,7 @@ generatePlansza();
 
 dodajEventyDoPul();
 
-pentla();
+// pentla();
 
 
 
