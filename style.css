@@ -1,0 +1,97 @@
+/* GLOBALNA ZASADA DLA LEPSZEJ KONTROLI ROZMIARÓW */
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.button {
+    display: inline;
+    justify-content: center;
+    align-items: center;
+    font-size: x-large;
+    font-weight: bold;
+    color: black;
+    background-color: #2ea44f;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    padding: 8px 16px;
+
+}
+
+.button:hover {
+  background-color: #1b4e29;
+  color: white;
+}
+
+#row {
+    border: 1px solid #444;
+    grid-area: 1 / 1 / 2 / 8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #cccccc;
+}
+
+#board-container {
+    display: grid;
+    /* grid-template-columns i grid-template-rows będą ustawione przez JS */
+    border: 1px solid #333;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.cell {
+    border: 1px solid #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    color: #555;
+    background-color: white;
+}
+
+.today, .week {
+    background-color: #cccccc !important;
+}
+
+.year, .empty {
+    background-color: #999999;
+}
+
+/* const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"] */
+
+/* // kolory obiektow
+const colorsRGBA = [
+    'rgba(255, 99, 71, 0.7)',  // Tomato (czerwony)
+    'rgba(255, 165, 0, 0.7)',  // Orange (pomarańczowy)
+    'rgba(255, 255, 0, 0.7)',  // Yellow (żółty)
+    'rgba(124, 252, 0, 0.7)',  // Lawn Green (jasny zielony)
+    'rgba(0, 128, 0, 0.7)',   // Green (zielony)
+    'rgba(0, 191, 255, 0.7)',  // Deep Sky Blue (błękitny)
+    'rgba(0, 0, 255, 0.7)',   // Blue (niebieski)
+    'rgba(128, 0, 128, 0.7)',  // Purple (fioletowy)
+    'rgba(255, 0, 255, 0.7)',  // Magenta (purpurowy/różowy)
+    'rgba(255, 105, 180, 0.7)' // Hot Pink (gorący róż)
+]; */
+
+.l { background-color: rgba(255, 99, 71, 0.7) }
+.i { background-color: rgba(255, 165, 0, 0.7) }
+.n { background-color: rgba(255, 255, 0, 0.7) }
+.N { background-color: rgba(124, 252, 0, 0.7) }
+.R { background-color: rgba(0, 128, 0, 0.7) }
+.P { background-color: rgba(0, 191, 255, 0.7) }
+.L { background-color: rgba(0, 0, 255, 0.7) }
+.Z { background-color: rgba(128, 0, 128, 0.7) }
+.T { background-color: rgba(255, 0, 255, 0.7) }
+.C { background-color: rgba(255, 105, 180, 0.7) }
