@@ -348,13 +348,16 @@ function pentla() {
         sprawdzDate();
         dzienText = dzien.getDate() + "/" + (dzien.getMonth() + 1) + "/" + dzien.getFullYear();
 
-        if (setShapeOnBoard())
-            // console.log(dzienText, " Jest");
+        if (setShapeOnBoard()) {
+            console.log(dzienText, " Jest");
             i++;
-        else
-            // console.log(dzienText, " Nie ma");
+        }
+        else {
+            console.log(dzienText, " Nie ma");
             j++;
+        }
         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
+
 
         if ( d % 10 == 0 ) console.log("Jest", i, ".   Nie ma", j);
 
@@ -368,7 +371,7 @@ generatePlansza();
 
 dodajEventyDoPul();
 
-// pentla();
+pentla();
 
 
 
