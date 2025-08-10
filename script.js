@@ -27,11 +27,12 @@ const opis = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun","" , "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","" ,
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
     "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
-    "Sun", "Mon", "Tue", "Wed","2025" ,"2026" ,"2027" ,"2028" , "Thu", "Fri", "Sat"
+    "Sun", "Mon", "Tue", "Wed", "2025" ,"2026" ,"2027" ,"2028" , "Thu", "Fri", "Sat"
 ];
 // bierzacy dzien
-const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"]
-
+const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"];
+const mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const dwe = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // Ustawienie rozmiarów siatki dla #board-container za pomocą JavaScript
 boardContainer.style.gridTemplateColumns = `repeat(${numCols}, ${cellSize}px)`;
@@ -48,22 +49,24 @@ function generatePlansza() {
         tablica[r] = new Array(numCols).fill(0);
         for (let c = 0; c < numCols; c++) {
             const cell = document.createElement('div');
+            const text = opis[i];
             cell.classList.add('cell');
 
             // Ustawienie rozmiaru komórki
             cell.style.width = cell.style.height = `${cellSize}px`;
             cell.id = `${i}`;
-            cell.textContent = opis[i]; 
+            cell.textContent = text; 
 
             // miesiac, dzien, rok, dzien tygodnia
-            if ( i === 6 || i === 13) cell.classList.add("empty");
-            else if (i < 13) cell.classList.add("month");
-            else if (i < 45) cell.classList.add("day");
-            else if (i > 48 && i < 53) cell.classList.add("year");
-            else cell.classList.add("wday");
+            if ( text == "") cell.classList.add("empty");
+            else if ( mon.includes(text) ) cell.classList.add("month");
+            else if ( parseInt(text) < 32) cell.classList.add("day");
+            else if ( dwe.includes(text) ) cell.classList.add("wday");
+            else cell.classList.add("year");
+
             // pierwszy styczen 2025 - Sroda
-            if (i === 0 || i === 14 || i === 49 ) cell.classList.add("today");
-            if (i === 48) cell.classList.add("week");
+            if ( text === "Jan" || text === "1" || text === "2025" ) cell.classList.add("today");
+            if ( text === "Wed" ) cell.classList.add("week");
             i++;
             boardContainer.appendChild(cell);
         }
@@ -83,12 +86,11 @@ function getDayOfWeek(year, month, day) {
 }
 
 function today() {
-    const thisDate = document.querySelectorAll('.today')
 
     return {
-        "month" : (parseInt(thisDate[0].id) - ((parseInt(thisDate[0].id) > 5) ? 1: 0)),
-        "day" : (parseInt(thisDate[1].id) - 13),
-        "year" : (parseInt(thisDate[2].textContent))
+        "month" : mon.indexOf(document.querySelector(".today.month").textContent),
+        "day" : parseInt(document.querySelector(".today.day").textContent),
+        "year" : parseInt(document.querySelector(".today.year").textContent)
     }
 }
 
@@ -102,38 +104,31 @@ function sprawdzDate() {
         thisDate = today();
         realDate = getDayOfWeek(thisDate.year, thisDate.month, thisDate.day);
     }
-    setWeek(realDate.week); 
-}
-
-// popraw dzien tygodnia
-function setWeek(nr) {
-
+    
     document.querySelector(".week").classList.remove("week");
-    (document.querySelectorAll('div.wday'))[nr].classList.add("week");
+    document.querySelectorAll('div.wday')[realDate.week].classList.add("week");
+
 }
 
 // popraw dzien
 function setDay(nr) {
-    const days = document.querySelectorAll(".day")
 
-    days[today().day - 1].classList.remove("today");
-    days[--nr].classList.add("today");
+    document.querySelector(".today.day").classList.remove("today");
+    document.querySelectorAll(".day")[--nr].classList.add("today");
 }
 
 // popraw dzien
 function setMonth(nr) {
-    const months = document.querySelectorAll(".month")
 
-    months[today().month].classList.remove("today");
-    months[nr].classList.add("today");
+    document.querySelector(".today.month").classList.remove("today");
+    document.querySelectorAll(".month")[nr].classList.add("today");
 }
 
 // popraw dzien
 function setYear(nr) {
-    const years = document.querySelectorAll('div.year');
 
-    (years[today().year - 2025]).classList.remove("today");
-    years[nr - 2025].classList.add("today");
+    document.querySelector(".today.year").classList.remove("today");
+    document.querySelectorAll('.year')[nr - 2025].classList.add("today");
 }
 
 // aktywne pola
@@ -145,13 +140,13 @@ function dodajEventyDoPul() {
 
         months.forEach(div => {
             div.addEventListener('click', (event) => {
-                setMonth(parseInt(event.target.id) - ((parseInt(event.target.id) > 5) ? 1 : 0));
+                setMonth(mon.indexOf(event.target.textContent));
                 sprawdzDate();
             });
         });
         day.forEach(div => {
             div.addEventListener('click', (event) => {
-                setDay(parseInt(event.target.id) - 13);
+                setDay(parseInt(event.target.textContent));
                 sprawdzDate();
             });
         });
@@ -164,7 +159,7 @@ function dodajEventyDoPul() {
         });
     });
     document.querySelector("button").addEventListener('click', (e) => {
-        console.log("poszlo");
+        // console.log("poszlo");
         setShapeOnBoard();
     })
 }
@@ -329,6 +324,13 @@ function setShapeOnBoard() {
         // if (obiekty.length < 2 && testujPole(pole)) debugger;
     } while (pole < 54 || obiekty.length === 0);
 
+    if (! wynik)
+        console.log("Nie ma ukladu");
+    else
+        console.log("Gotowy uklad");
+        
+        
+
     return wynik;
     // console.log("Pole - ", pole, ".  Pozostalo klockow - ", obiekty.length, obiekty[0]);
 }
@@ -347,15 +349,17 @@ function pentla() {
         sprawdzDate();
         dzienText = dzien.getDate() + "/" + (dzien.getMonth() + 1) + "/" + dzien.getFullYear();
 
-        if (setShapeOnBoard())
-            // console.log(dzienText, " Jest");
+        if (setShapeOnBoard()) {
+            console.log(dzienText, " Jest");
             i++;
-        else
-            // console.log(dzienText, " Nie ma");
+        }
+        else {
+            console.log(dzienText, " Nie ma");
             j++;
+        }
         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
 
-        if ( d % 10 == 0 ) console.log("Jest", i, ".   Nie ma", j);
+        // if ( d % 10 == 0 ) console.log("Jest", i, ".   Nie ma", j);
 
     }
     console.log(dzien, "  Jest", i, ".   Nie ma", j);
@@ -367,7 +371,7 @@ generatePlansza();
 
 dodajEventyDoPul();
 
-pentla();
+// pentla();
 
 
 
