@@ -321,10 +321,10 @@ function setShapeOnBoard() {
         // if (obiekty.length < 2 && testujPole(pole)) debugger;
     } while (pole < 54 || obiekty.length === 0);
 
-    if (! wynik)
-        console.log("Nie ma ukladu");
-    else
-        console.log("Gotowy uklad");
+    // if (! wynik)
+    //     console.log("Nie ma ukladu");
+    // else
+    //     console.log("Gotowy uklad");
         
         
 
@@ -332,36 +332,34 @@ function setShapeOnBoard() {
     // console.log("Pole - ", pole, ".  Pozostalo klockow - ", obiekty.length, obiekty[0]);
 }
 
-function pentla() {
-    let dzien;
-    let dzienText;
-    let i = 0, j = 0;
+// function pentla() {
+//     let dzien;
+//     let dzienText;
+//     let i = 0, j = 0;
 
-    for (let d = 1; d < 366; d++) {
-        dzien = new Date( 2025, 0, d)
-        // console.log(dzien);
-        setDay(dzien.getDate());
-        setMonth(dzien.getMonth());
-        setYear(dzien.getFullYear());
-        sprawdzDate();
-        dzienText = dzien.getDate() + "/" + (dzien.getMonth() + 1) + "/" + dzien.getFullYear();
+//     for (let d = 1; d < 180; d++) {
+//         dzien = new Date( 2025, 0, d)
+//         // console.log(dzien);
+//         setDay(dzien.getDate());
+//         setMonth(dzien.getMonth());
+//         setYear(dzien.getFullYear());
+//         sprawdzDate();
+//         dzienText = dzien.getDate() + "/" + (dzien.getMonth() + 1) + "/" + dzien.getFullYear();
 
-        if (setShapeOnBoard()) {
-            console.log(dzienText, " Jest");
-            i++;
-        }
-        else {
-            console.log(dzienText, " Nie ma");
-            j++;
-        }
-        nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
+//         if (setShapeOnBoard()) {
+//             console.log(dzienText, " Jest");
+//             i++;
+//         }
+//         else {
+//             console.log(dzienText, " Nie ma");
+//             j++;
+//         }
+//         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
 
-        // if ( d % 10 == 0 ) console.log("Jest", i, ".   Nie ma", j);
-
-    }
-    console.log(dzien, "  Jest", i, ".   Nie ma", j);
+//     }
+//     console.log(dzien, "  Jest", i, ".   Nie ma", j);
     
-}
+// }
 
 // Wyświetl pierwszą konfigurację przy starcie
 generatePlansza();
@@ -370,6 +368,33 @@ dodajEventyDoPul();
 
 // pentla();
 
+// sprawdzaj po przycisnieciu spacji kolejne dni
+let d = 1, i = 0, j = 0;
+document.body.onkeyup = function(e) {
+  if (e.key == " " ) {
+    let dzien = new Date( 2025, 0, d)
+    setDay(dzien.getDate());
+    setMonth(dzien.getMonth());
+    setYear(dzien.getFullYear());
+        
+    let dzienText = dzien.toLocaleDateString("en-Gb");
+    nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
+
+    if (setShapeOnBoard()) {
+        // console.log(dzienText, " Jest");
+        i++;
+    }
+    else {
+        // console.log(dzienText, " Nie ma");
+        j++;
+    }
+
+    d++;
+    if (d % 10 === 0 || d === 366)
+        console.log("--- ", d ," ---  ", dzienText, "   Jest", i, ".   Nie ma", j);
+    
+  }
+}
 
 
 // --- KONIEC KODU DO OBSŁUGI OBIEKTU L ---
