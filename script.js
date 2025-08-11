@@ -4,33 +4,22 @@ import ShapesConfigurations from "./shapes.js";
 const numRows = 8;        // Liczba wierszy planszy
 const numCols = 7;       // Liczba kolumn planszy
 const cellSize = 100;      // Rozmiar pojedynczej komórki w pikselach (np. 40px na 40px)
-const tablica = new Array(numRows);
 // ---------------------------------------------
 
 const boardContainer = document.getElementById('board-container');
 
-// kolory obiektow
-const colorsRGBA = [
-    'rgba(255, 99, 71, 0.7)',  // Tomato (czerwony)
-    'rgba(255, 165, 0, 0.7)',  // Orange (pomarańczowy)
-    'rgba(255, 255, 0, 0.7)',  // Yellow (żółty)
-    'rgba(124, 252, 0, 0.7)',  // Lawn Green (jasny zielony)
-    'rgba(0, 128, 0, 0.7)',   // Green (zielony)
-    'rgba(0, 191, 255, 0.7)',  // Deep Sky Blue (błękitny)
-    'rgba(0, 0, 255, 0.7)',   // Blue (niebieski)
-    'rgba(128, 0, 128, 0.7)',  // Purple (fioletowy)
-    'rgba(255, 0, 255, 0.7)',  // Magenta (purpurowy/różowy)
-    'rgba(255, 105, 180, 0.7)' // Hot Pink (gorący róż)
-];
 // texty na polach
 const opis = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "2025", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","2026" ,
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
-    "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
-    "Sun", "Mon", "Tue", "Wed", "2027" ,"2028" ,"2029" ,"2030" , "Thu", "Fri", "Sat"
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "2025",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","2026" ,
+    "Sun", "Mon", "Tue", "Wed",  "Thu", "Fri", "Sat",
+    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", 
+    "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+    "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
+    "2027" ,"2028" ,"2029" ,"2030" 
 ];
 // bierzacy dzien
-const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"];
+const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C","X"];
 const mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dwe = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -46,7 +35,6 @@ function generatePlansza() {
     let i = 0;
 
     for (let r = 0; r < numRows; r++) {
-        tablica[r] = new Array(numCols).fill(0);
         for (let c = 0; c < numCols; c++) {
             const cell = document.createElement('div');
             const text = opis[i];
@@ -71,10 +59,14 @@ function generatePlansza() {
             boardContainer.appendChild(cell);
         }
     }
+    // test nowej figury
+    // const o = {"index" : 10, "konfig" : 0, "nazwa" : "X" }
+    // rysujShape(o , 2);
 }
 
 // 2. Obsluga ustawiania dnia na planszy
 
+// pobierz dzien tygodnia
 function getDayOfWeek(year, month, day) {
     const date = new Date(year, month, day);
 
@@ -85,6 +77,7 @@ function getDayOfWeek(year, month, day) {
         "week" : date.getDay()};
 }
 
+// pobierz dzien z planszy
 function today() {
 
     return {
@@ -94,6 +87,7 @@ function today() {
     }
 }
 
+// czy data jest poprawna, jak nie to popraw (odejmuj dzien)
 function sprawdzDate() {
     let thisDate = today();
     let realDate = getDayOfWeek(thisDate.year, thisDate.month, thisDate.day);
@@ -114,26 +108,24 @@ function sprawdzDate() {
 
 // popraw dzien
 function setDay(nr) {
-
     document.querySelector(".today.day").classList.remove("today");
     document.querySelectorAll(".day")[--nr].classList.add("today");
 }
 
 // popraw dzien
 function setMonth(nr) {
-
     document.querySelector(".today.month").classList.remove("today");
     document.querySelectorAll(".month")[nr].classList.add("today");
 }
 
 // popraw dzien
 function setYear(nr) {
-
     document.querySelector(".today.year").classList.remove("today");
     document.querySelectorAll('.year')[nr - 2025].classList.add("today");
 }
 
-// aktywne pola
+// 3. Dodaj eventy do pul i klawiszy
+
 function dodajEventyDoPul() {
     document.addEventListener('DOMContentLoaded', () => {
         const months = document.querySelectorAll('div.month');
@@ -170,7 +162,7 @@ function dodajEventyDoPul() {
 }
 
 
-// 3. Testowanie Ukladu
+// 4. Testowanie Ukladu
 
 function zmazShape(nazwa) {
     boardContainer.querySelectorAll(`.${nazwa}`).forEach(klocek =>
