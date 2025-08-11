@@ -24,10 +24,10 @@ const colorsRGBA = [
 ];
 // texty na polach
 const opis = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun","" , "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","" ,
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "2025", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","2026" ,
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
     "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
-    "Sun", "Mon", "Tue", "Wed", "2025" ,"2026" ,"2027" ,"2028" , "Thu", "Fri", "Sat"
+    "Sun", "Mon", "Tue", "Wed", "2027" ,"2028" ,"2029" ,"2030" , "Thu", "Fri", "Sat"
 ];
 // bierzacy dzien
 const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"];
@@ -105,8 +105,10 @@ function sprawdzDate() {
         realDate = getDayOfWeek(thisDate.year, thisDate.month, thisDate.day);
     }
     
-    document.querySelector(".week").classList.remove("week");
-    document.querySelectorAll('div.wday')[realDate.week].classList.add("week");
+    if (document.querySelectorAll('.wday')) {
+        document.querySelector(".week").classList.remove("week");
+        document.querySelectorAll('.wday')[realDate.week].classList.add("week");
+    }
 
 }
 
@@ -158,10 +160,13 @@ function dodajEventyDoPul() {
             });
         });
     });
-    document.querySelector("button").addEventListener('click', (e) => {
-        // console.log("poszlo");
+    document.querySelector("#test").addEventListener('click', (e) => {
         setShapeOnBoard();
     })
+    document.querySelector("#clear").addEventListener('click', (e) => {
+        nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
+    })
+
 }
 
 
