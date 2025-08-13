@@ -1,4 +1,4 @@
-import ShapesConfigurations from "./shapes.js";
+import Shapes from "./shapes.js";
 
 // --- ZMIENNE ROZMIAROWE W JEDNYM MIEJSCU ---
 const numRows = 8;        // Liczba wierszy planszy
@@ -12,14 +12,14 @@ const boardContainer = document.getElementById('board-container');
 const opis = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "2025",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","2026" ,
-    "Sun", "Mon", "Tue", "Wed",  "Thu", "Fri", "Sat",
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", 
+    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
     "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
     "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
-    "2027" ,"2028" ,"2029" ,"2030" 
+    "Sun", "Mon", "Tue", "Wed",
+    "2027" ,"2028" ,"2029" ,"2030", "Thu", "Fri", "Sat"
 ];
 // bierzacy dzien
-const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C","X"];
+let nazwyShapes = [];
 const mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dwe = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -43,7 +43,7 @@ function generatePlansza() {
             // Ustawienie rozmiaru komórki
             cell.style.width = cell.style.height = `${cellSize}px`;
             cell.id = `${i}`;
-            cell.textContent = text; 
+            cell.textContent = text;
 
             // miesiac, dzien, rok, dzien tygodnia
             if ( text == "") cell.classList.add("empty");
@@ -59,6 +59,11 @@ function generatePlansza() {
             boardContainer.appendChild(cell);
         }
     }
+    // debugger;
+    // START ZMIANY: Pobieranie nazw z nowej struktury danych
+    Shapes.forEach(e => nazwyShapes.push(e.name));
+    // KONIEC ZMIANY
+
     // test nowej figury
     // const o = {"index" : 10, "konfig" : 0, "nazwa" : "X" }
     // rysujShape(o , 2);
@@ -70,7 +75,7 @@ function generatePlansza() {
 function getDayOfWeek(year, month, day) {
     const date = new Date(year, month, day);
 
-    return { 
+    return {
         "year": date.getFullYear(),
         "month" : date.getMonth(),
         "day" : date.getDate(),
@@ -98,7 +103,7 @@ function sprawdzDate() {
         thisDate = today();
         realDate = getDayOfWeek(thisDate.year, thisDate.month, thisDate.day);
     }
-    
+
     if (document.querySelectorAll('.wday').length > 0) {
         document.querySelector(".week").classList.remove("week");
         document.querySelectorAll('.wday')[realDate.week].classList.add("week");
@@ -153,7 +158,8 @@ function dodajEventyDoPul() {
         });
     });
     document.querySelector("#test").addEventListener('click', (e) => {
-        setShapeOnBoard();
+        if (!setShapeOnBoard())
+            console.log("Nie ma ukladu!");
     })
     document.querySelector("#clear").addEventListener('click', (e) => {
         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
@@ -172,10 +178,11 @@ function zmazShape(nazwa) {
 
 // rysowanie figury
 function rysujShape(obiekt, pole) {
-    
-    ShapesConfigurations[obiekt.index][obiekt.konfig].forEach(kostka => 
+    // START ZMIANY: Poprawne odwołanie do nowej struktury
+    Shapes[obiekt.index].rotations[obiekt.konfig].forEach(kostka =>
         document.getElementById((pole + kostka[1] + kostka[0] * 7)).classList.add(obiekt.nazwa)
     );
+    // KONIEC ZMIANY
 }
 
 // testuj pole
@@ -193,7 +200,9 @@ function testujObiekt(obiekt, pole) {
     let r = (pole - c) / 7;
     let kostka, x, y;
 
-    const kostki = ShapesConfigurations[obiekt.index][obiekt.konfig];
+    // START ZMIANY: Poprawne odwołanie do nowej struktury
+    const kostki = Shapes[obiekt.index].rotations[obiekt.konfig];
+    // KONIEC ZMIANY
     if (kostki == undefined) return false;
     let ok = true;
 
@@ -213,7 +222,7 @@ function testujObiekt(obiekt, pole) {
 function includes(lista, uklad) {
     let jest = false;
 
-    for (const e of lista) 
+    for (const e of lista)
         if (e.pole === uklad.pole && e.index === uklad.index && e.konfig === uklad.konfig) jest = true;
 
     return jest;
@@ -224,10 +233,10 @@ function wyczysc(lista, pole) {
     for (let i = lista.length - 1; i >= 0 ; i--) {
         const e = lista[i];
         if (e.pole >= pole)
-            lista.pop(); 
+            lista.pop();
         else
-            break;                      
-    } 
+            break;
+    }
 }
 
 function cofnijRuch(ustawione, obiekty) {
@@ -237,8 +246,9 @@ function cofnijRuch(ustawione, obiekty) {
     boardContainer.querySelectorAll(`.${back.nazwa}`).forEach(klocek =>
         klocek.classList.remove(back.nazwa)
     );
-    // next konfig
-    back.konfig = (back.konfig + 1) % ShapesConfigurations[back.index].length;
+    // START ZMIANY: Poprawne odwołanie do nowej struktury
+    back.konfig = (back.konfig + 1) % Shapes[back.index].rotations.length;
+    // KONIEC ZMIANY
     //przechowaj pozycje - 1
     const pole = back.pole - 1;
     // wymaz element i przenies do obiektow
@@ -252,7 +262,7 @@ function cofnijRuch(ustawione, obiekty) {
 function setShapeOnBoard() {
     // metoda silowa, proba osadzenia kazdego ksztaltu w kazdej konfiguracji na kolejnych miejscach
     // tablica obiektow do osadzenia, numer ob, konfiguracja, nazwa
-    let obiekty = Array(nazwyShapes.length);
+    let obiekty = Array(Shapes.length);
     let ustawione = Array(0);
     let taKonf = true;
     let cont = 0;
@@ -262,8 +272,11 @@ function setShapeOnBoard() {
     let alicznik = 0;
     let wynik = true;
 
-    for (let i = 0; i < nazwyShapes.length; i++) 
-        obiekty[i] = { "index" : i, "konfig" : 0, "nazwa" : nazwyShapes[i] };
+    // START ZMIANY: Poprawne tworzenie tablicy obiektów do osadzenia
+    for (let i = 0; i < Shapes.length; i++)
+        obiekty[i] = { "index" : i, "konfig" : 0, "nazwa" : Shapes[i].name };
+    // KONIEC ZMIANY
+
     // petla przechodzaca kolejne puste pola
     let pole = 0;
     // debugger;
@@ -272,11 +285,13 @@ function setShapeOnBoard() {
         if (testujPole(pole)) {
             cont = 0; taKonf = true;   // licznik obiektow do ustawienia
             do {    // pentla nieurzytych klockow
+                // START ZMIANY: Poprawne odwołanie do nowej struktury
                 while (! testujObiekt(obiekty[0], pole)) {  // pentla konfiguracji
                     obiekty[0].konfig ++;
-                    if (obiekty[0].konfig >= ShapesConfigurations[obiekty[0].index].length) {
+                    if (obiekty[0].konfig >= Shapes[obiekty[0].index].rotations.length) {
                         taKonf = false; break; }
                 }
+                // KONIEC ZMIANY
                 if (taKonf) {   // jesli pasuje to czy juz byla
                     uklad = {"pole" : pole, "index" : obiekty[0].index, "konfig" : obiekty[0].konfig};
                     if ( includes( lista, uklad ) ) cont = 20;
@@ -297,7 +312,7 @@ function setShapeOnBoard() {
                 }
             } while (cont < obiekty.length);
 
-            if (obiekty.length === 0) 
+            if (obiekty.length === 0)
                 // { console.log("Koniec, jest uklad", alicznik); break;}
                 { wynik = true; break;}
 
@@ -307,7 +322,7 @@ function setShapeOnBoard() {
                     { wynik = false; break;}
                 pole = cofnijRuch(ustawione, obiekty)
                 // cofnij kolejny
-                if (cont === 20) {                    
+                if (cont === 20) {
                     // posciagac z listy te pola
                     wyczysc(lista, pole +1);
                     if ( ustawione.length < 1 ) // nie ma co wycofac, wynik albo nie ma
@@ -316,57 +331,21 @@ function setShapeOnBoard() {
                     pole = cofnijRuch(ustawione, obiekty)
                 }
             }
-        }   
-        pole ++; 
+        }
+        pole ++;
         // if (obiekty.length < 2 && testujPole(pole)) debugger;
     } while (pole < 54 || obiekty.length === 0);
 
-    // if (! wynik)
-    //     console.log("Nie ma ukladu");
-    // else
-    //     console.log("Gotowy uklad");
-        
-        
 
     return wynik;
-    // console.log("Pole - ", pole, ".  Pozostalo klockow - ", obiekty.length, obiekty[0]);
 }
 
-// function pentla() {
-//     let dzien;
-//     let dzienText;
-//     let i = 0, j = 0;
-
-//     for (let d = 1; d < 180; d++) {
-//         dzien = new Date( 2025, 0, d)
-//         // console.log(dzien);
-//         setDay(dzien.getDate());
-//         setMonth(dzien.getMonth());
-//         setYear(dzien.getFullYear());
-//         sprawdzDate();
-//         dzienText = dzien.getDate() + "/" + (dzien.getMonth() + 1) + "/" + dzien.getFullYear();
-
-//         if (setShapeOnBoard()) {
-//             console.log(dzienText, " Jest");
-//             i++;
-//         }
-//         else {
-//             console.log(dzienText, " Nie ma");
-//             j++;
-//         }
-//         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
-
-//     }
-//     console.log(dzien, "  Jest", i, ".   Nie ma", j);
-    
-// }
 
 // Wyświetl pierwszą konfigurację przy starcie
 generatePlansza();
 
 dodajEventyDoPul();
 
-// pentla();
 
 // sprawdzaj po przycisnieciu spacji kolejne dni
 let d = 1, i = 0, j = 0;
@@ -377,7 +356,7 @@ document.body.onkeyup = function(e) {
     setMonth(dzien.getMonth());
     setYear(dzien.getFullYear());
     sprawdzDate();
-        
+
     let dzienText = dzien.toLocaleDateString("en-Gb");
     nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
 
@@ -393,7 +372,7 @@ document.body.onkeyup = function(e) {
     d++;
     if (d % 10 === 0 || d === 366)
         console.log("--- ", d ," ---  ", dzienText, "   Jest", i, ".   Nie ma", j);
-    
+
   }
 }
 

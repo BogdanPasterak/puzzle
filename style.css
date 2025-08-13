@@ -66,6 +66,11 @@ body {
     background-color: #cccccc !important;
 }
 
+.year, .empty {
+    background-color: #999999;
+}
+
+
 /* const nazwyShapes = ["l","i","n","N","R","P","L","Z","T","C"] */
 
 .l { background-color: rgba(255, 99, 71, 0.7) }
