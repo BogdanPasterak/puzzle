@@ -99,7 +99,7 @@ function sprawdzDate() {
         realDate = getDayOfWeek(thisDate.year, thisDate.month, thisDate.day);
     }
     
-    if (document.querySelectorAll('.wday')) {
+    if (document.querySelectorAll('.wday').length > 0) {
         document.querySelector(".week").classList.remove("week");
         document.querySelectorAll('.wday')[realDate.week].classList.add("week");
     }
@@ -376,6 +376,7 @@ document.body.onkeyup = function(e) {
     setDay(dzien.getDate());
     setMonth(dzien.getMonth());
     setYear(dzien.getFullYear());
+    sprawdzDate();
         
     let dzienText = dzien.toLocaleDateString("en-Gb");
     nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
