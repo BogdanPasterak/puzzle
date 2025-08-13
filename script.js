@@ -65,8 +65,8 @@ function generatePlansza() {
     // KONIEC ZMIANY
 
     // test nowej figury
-    // const o = {"index" : 10, "konfig" : 0, "nazwa" : "X" }
-    // rysujShape(o , 2);
+    // const testShape = { index: 3, konfig: 3, nazwa: 'C' };
+    // rysujShape(testShape , 2);
 }
 
 // 2. Obsluga ustawiania dnia na planszy
@@ -365,7 +365,7 @@ document.body.onkeyup = function(e) {
         i++;
     }
     else {
-        // console.log(dzienText, " Nie ma");
+        console.log(dzienText, " Nie ma");
         j++;
     }
 
