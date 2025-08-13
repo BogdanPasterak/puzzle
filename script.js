@@ -65,7 +65,7 @@ function generatePlansza() {
     // KONIEC ZMIANY
 
     // test nowej figury
-    // const testShape = { index: 3, konfig: 3, nazwa: 'C' };
+    // const testShape = { index: 1, konfig: 0, nazwa: 'r' };
     // rysujShape(testShape , 2);
 }
 
