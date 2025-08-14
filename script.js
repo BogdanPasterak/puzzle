@@ -59,10 +59,8 @@ function generatePlansza() {
             boardContainer.appendChild(cell);
         }
     }
-    // debugger;
-    // START ZMIANY: Pobieranie nazw z nowej struktury danych
+
     Shapes.forEach(e => nazwyShapes.push(e.name));
-    // KONIEC ZMIANY
 
     // test nowej figury
     // const testShape = { index: 1, konfig: 0, nazwa: 'r' };
@@ -178,11 +176,9 @@ function zmazShape(nazwa) {
 
 // rysowanie figury
 function rysujShape(obiekt, pole) {
-    // START ZMIANY: Poprawne odwołanie do nowej struktury
     Shapes[obiekt.index].rotations[obiekt.konfig].forEach(kostka =>
         document.getElementById((pole + kostka[1] + kostka[0] * 7)).classList.add(obiekt.nazwa)
     );
-    // KONIEC ZMIANY
 }
 
 // testuj pole
@@ -199,12 +195,9 @@ function testujObiekt(obiekt, pole) {
     let c = pole % 7;
     let r = (pole - c) / 7;
     let kostka, x, y;
-
-    // START ZMIANY: Poprawne odwołanie do nowej struktury
-    const kostki = Shapes[obiekt.index].rotations[obiekt.konfig];
-    // KONIEC ZMIANY
-    if (kostki == undefined) return false;
     let ok = true;
+
+    const kostki = Shapes[obiekt.index].rotations[obiekt.konfig];
 
     for (let i = 0; i < kostki.length; i++) {
         kostka = kostki[i];
@@ -246,9 +239,7 @@ function cofnijRuch(ustawione, obiekty) {
     boardContainer.querySelectorAll(`.${back.nazwa}`).forEach(klocek =>
         klocek.classList.remove(back.nazwa)
     );
-    // START ZMIANY: Poprawne odwołanie do nowej struktury
     back.konfig = (back.konfig + 1) % Shapes[back.index].rotations.length;
-    // KONIEC ZMIANY
     //przechowaj pozycje - 1
     const pole = back.pole - 1;
     // wymaz element i przenies do obiektow
@@ -272,10 +263,8 @@ function setShapeOnBoard() {
     let alicznik = 0;
     let wynik = true;
 
-    // START ZMIANY: Poprawne tworzenie tablicy obiektów do osadzenia
     for (let i = 0; i < Shapes.length; i++)
         obiekty[i] = { "index" : i, "konfig" : 0, "nazwa" : Shapes[i].name };
-    // KONIEC ZMIANY
 
     // petla przechodzaca kolejne puste pola
     let pole = 0;
@@ -285,13 +274,11 @@ function setShapeOnBoard() {
         if (testujPole(pole)) {
             cont = 0; taKonf = true;   // licznik obiektow do ustawienia
             do {    // pentla nieurzytych klockow
-                // START ZMIANY: Poprawne odwołanie do nowej struktury
                 while (! testujObiekt(obiekty[0], pole)) {  // pentla konfiguracji
                     obiekty[0].konfig ++;
                     if (obiekty[0].konfig >= Shapes[obiekty[0].index].rotations.length) {
                         taKonf = false; break; }
                 }
-                // KONIEC ZMIANY
                 if (taKonf) {   // jesli pasuje to czy juz byla
                     uklad = {"pole" : pole, "index" : obiekty[0].index, "konfig" : obiekty[0].konfig};
                     if ( includes( lista, uklad ) ) cont = 20;
