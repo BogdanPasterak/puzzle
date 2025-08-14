@@ -1,7 +1,7 @@
 import Shapes from "./shapes.js";
 
 // --- ZMIENNE ROZMIAROWE W JEDNYM MIEJSCU ---
-const numRows = 8;        // Liczba wierszy planszy
+const numRows = 7;        // Liczba wierszy planszy
 const numCols = 7;       // Liczba kolumn planszy
 const cellSize = 100;      // Rozmiar pojedynczej komórki w pikselach (np. 40px na 40px)
 // ---------------------------------------------
@@ -22,7 +22,7 @@ const opis = [
 // bierzacy dzien
 let nazwyShapes = [];
 const mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const dwe = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dwe = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sa/Su"];
 
 // Ustawienie rozmiarów siatki dla #board-container za pomocą JavaScript
 boardContainer.style.gridTemplateColumns = `repeat(${numCols}, ${cellSize}px)`;
@@ -51,7 +51,8 @@ function generatePlansza() {
             else if ( mon.includes(text) ) cell.classList.add("month");
             else if ( parseInt(text) < 32) cell.classList.add("day");
             else if ( dwe.includes(text) ) cell.classList.add("wday");
-            else cell.classList.add("year");
+            else if ( parseInt(text) > 2020) cell.classList.add("year");
+            else cell.classList.add("empty");
 
             // pierwszy styczen 2025 - Sroda
             if ( text === "Jan" || text === "1" || text === "2025" ) cell.classList.add("today");
@@ -83,11 +84,16 @@ function getDayOfWeek(year, month, day) {
 
 // pobierz dzien z planszy
 function today() {
+    let y;
+    if (document.querySelectorAll(".year").length > 0)
+        y = parseInt(document.querySelector(".today.year").textContent);
+    else
+        y = 2025;
 
     return {
         "month" : mon.indexOf(document.querySelector(".today.month").textContent),
         "day" : parseInt(document.querySelector(".today.day").textContent),
-        "year" : parseInt(document.querySelector(".today.year").textContent)
+        "year" : y
     }
 }
 
@@ -105,7 +111,10 @@ function sprawdzDate() {
 
     if (document.querySelectorAll('.wday').length > 0) {
         document.querySelector(".week").classList.remove("week");
-        document.querySelectorAll('.wday')[realDate.week].classList.add("week");
+        if (realDate.week === 0 || realDate.week === 6)
+            document.querySelectorAll('.wday')[5].classList.add("week");
+        else
+            document.querySelectorAll('.wday')[realDate.week - 1].classList.add("week");
     }
 
 }
@@ -124,8 +133,10 @@ function setMonth(nr) {
 
 // popraw dzien
 function setYear(nr) {
-    document.querySelector(".today.year").classList.remove("today");
-    document.querySelectorAll('.year')[nr - 2025].classList.add("today");
+    if (document.querySelectorAll(".year").length > 0)  {
+        document.querySelector(".today.year").classList.remove("today");
+        document.querySelectorAll('.year')[nr - 2025].classList.add("today");
+    }
 }
 
 // 3. Dodaj eventy do pul i klawiszy
@@ -193,8 +204,8 @@ function testujPole(nr) {
 // Testowanie obiektu w konfiguracji, na pozycji, oparte o tablice
 function testujObiekt(obiekt, pole) {
 
-    let c = pole % 7;
-    let r = (pole - c) / 7;
+    let c = pole % numCols;
+    let r = (pole - c) / numCols;
     let kostka, x, y;
     let ok = true;
 
@@ -205,7 +216,8 @@ function testujObiekt(obiekt, pole) {
         x = c + kostka[1];
         y = r + kostka[0];
         // poza obrazem lub nie biale pole
-        if ( x < 0 || y < 0 || x > 6 || y > 7 || ! testujPole(x + y * 7)) {
+        if ( x < 0 || y < 0 || x >= numCols || y >= numRows
+            || ! testujPole(x + y * numCols)) {
             ok = false;
             break;
         }
@@ -322,7 +334,7 @@ function setShapeOnBoard() {
         }
         pole ++;
         // if (obiekty.length < 2 && testujPole(pole)) debugger;
-    } while (pole < 54 || obiekty.length === 0);
+    } while (pole < numRows * numCols -2 );
 
 
     return wynik;
