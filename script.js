@@ -165,9 +165,9 @@ function dodajEventyDoPul() {
     })
     document.querySelector("#petla").addEventListener('click', (e) => {
         sa = 0, nie = 0;
-        test(1,100)
+        test(1,365)
             .then(wynik => console.log("Wynik końcowy: Sa ", sa, ".  Nie ma ", nie ))
-            // .catch(blad => console.error("Błąd w łańcuchu:", blad));
+            .catch(blad => console.error("Błąd w łańcuchu:", blad));
     })
 
 }
@@ -353,8 +353,8 @@ function test(wartosc, max) {
         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
         
         if (setShapeOnBoard()) {
-            if (wartosc % 10 === 0)
-                console.log(`${dzienText} Jest`);
+            if (wartosc % 20 === 0)
+                console.log(`${dzienText}`);
             sa++;
         } else {
             console.log(`${dzienText} Nie ma`);
@@ -376,28 +376,6 @@ function test(wartosc, max) {
     .catch(blad => console.log( blad ) );
 }
 
-function rekurencyjnaObietnica(liczba, maksymalnaLiczba) {
-    return new Promise((resolve, reject) => {
-        console.log(`Wykonuję operację dla: ${liczba}`);
-        // setTimeout(() => {
-        if (liczba < maksymalnaLiczba) {
-            resolve(liczba + 1);
-        } else {
-            reject("Koniec rekurencji");
-        }
-        // }, 1000);
-    })
-    .then(nowaLiczba => {
-        if (nowaLiczba <= maksymalnaLiczba) {
-        return rekurencyjnaObietnica(nowaLiczba, maksymalnaLiczba);
-        } else {
-            return nowaLiczba;
-        }
-    })
-    .catch(blad => {
-        console.error("Wystąpił błąd:", blad);
-    });
-}
 
 // rekurencyjnaObietnica(1, 5)
 //     .then(wynik => console.log("Wynik końcowy:", wynik))
