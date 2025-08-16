@@ -7,6 +7,7 @@ const cellSize = 100;      // Rozmiar pojedynczej komórki w pikselach (np. 40px
 // ---------------------------------------------
 
 const boardContainer = document.getElementById('board-container');
+let sa = 0, nie = 0;
 
 // texty na polach
 const opis = [
@@ -162,9 +163,14 @@ function dodajEventyDoPul() {
     document.querySelector("#clear").addEventListener('click', (e) => {
         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
     })
+    document.querySelector("#petla").addEventListener('click', (e) => {
+        sa = 0, nie = 0;
+        test(1,100)
+            .then(wynik => console.log("Wynik końcowy: Sa ", sa, ".  Nie ma ", nie ))
+            // .catch(blad => console.error("Błąd w łańcuchu:", blad));
+    })
 
 }
-
 
 // 4. Testowanie Ukladu
 
@@ -334,34 +340,67 @@ generatePlansza();
 dodajEventyDoPul();
 
 
-// sprawdzaj po przycisnieciu spacji kolejne dni
-let d = 1, i = 0, j = 0;
-document.body.onkeyup = function(e) {
-  if (e.key == " " ) {
-    let dzien = new Date( 2025, 0, d)
-    setDay(dzien.getDate());
-    setMonth(dzien.getMonth());
-    setYear(dzien.getFullYear());
-    sprawdzDate();
+function test(wartosc, max) {
+    return new Promise((resolve, reject) => {
 
-    let dzienText = dzien.toLocaleDateString("en-Gb");
-    nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
+        let dzien = new Date( 2025, 0, wartosc)
+        setDay(dzien.getDate());
+        setMonth(dzien.getMonth());
+        setYear(dzien.getFullYear());
+        sprawdzDate();
 
-    if (setShapeOnBoard()) {
-        // console.log(dzienText, " Jest");
-        i++;
-    }
-    else {
-        console.log(dzienText, " Nie ma");
-        j++;
-    }
+        let dzienText = dzien.toLocaleDateString("en-Gb");
+        nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
+        
+        if (setShapeOnBoard()) {
+            if (wartosc % 10 === 0)
+                console.log(`${dzienText} Jest`);
+            sa++;
+        } else {
+            console.log(`${dzienText} Nie ma`);
+            nie++;
+        }
 
-    d++;
-    if (d % 10 === 0 || d === 366)
-        console.log("--- ", d ," ---  ", dzienText, "   Jest", i, ".   Nie ma", j);
-
-  }
+        if (wartosc < max) {
+            resolve(wartosc + 1); 
+        } else {
+            reject("Koniec");
+        }
+    })
+    .then(newWartosc => {
+        if (newWartosc <= max)
+            return test(newWartosc, max);   // wywolanie rekurencyjne
+        else
+            return newWartosc;
+    })
+    .catch(blad => console.log( blad ) );
 }
 
+function rekurencyjnaObietnica(liczba, maksymalnaLiczba) {
+    return new Promise((resolve, reject) => {
+        console.log(`Wykonuję operację dla: ${liczba}`);
+        // setTimeout(() => {
+        if (liczba < maksymalnaLiczba) {
+            resolve(liczba + 1);
+        } else {
+            reject("Koniec rekurencji");
+        }
+        // }, 1000);
+    })
+    .then(nowaLiczba => {
+        if (nowaLiczba <= maksymalnaLiczba) {
+        return rekurencyjnaObietnica(nowaLiczba, maksymalnaLiczba);
+        } else {
+            return nowaLiczba;
+        }
+    })
+    .catch(blad => {
+        console.error("Wystąpił błąd:", blad);
+    });
+}
+
+// rekurencyjnaObietnica(1, 5)
+//     .then(wynik => console.log("Wynik końcowy:", wynik))
+//     .catch(blad => console.error("Błąd w łańcuchu:", blad));
 
 // --- KONIEC KODU DO OBSŁUGI OBIEKTU L ---
