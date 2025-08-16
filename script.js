@@ -165,7 +165,14 @@ function dodajEventyDoPul() {
     })
     document.querySelector("#petla").addEventListener('click', (e) => {
         sa = 0, nie = 0;
-        test(1,365)
+// -----
+        // test(912,1095)  // 2027 B
+        // test(731,911)  // 2027 A
+        test(547,730)    // 2026 B
+        // test(366,546)    // 2026 A
+        // test(182,365)      // 2025 B
+        // test(1,181)      // 2025 A
+// -----        
             .then(wynik => console.log("Wynik końcowy: Sa ", sa, ".  Nie ma ", nie ))
             .catch(blad => console.error("Błąd w łańcuchu:", blad));
     })
@@ -353,7 +360,7 @@ function test(wartosc, max) {
         nazwyShapes.forEach(nazwa => zmazShape(nazwa) );
         
         if (setShapeOnBoard()) {
-            if (wartosc % 20 === 0)
+            if (wartosc % 25 === 0)
                 console.log(`${dzienText}`);
             sa++;
         } else {
